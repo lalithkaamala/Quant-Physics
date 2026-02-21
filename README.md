@@ -38,15 +38,6 @@ An option's value is derived from the underlying asset, time, and volatility. Th
 python3 option_pricing/main.py
 ```
 
-## 🤖 Automaton
-This repository is alive. A **GitHub Action** (`.github/workflows/daily_quant_update.yml`) wakes up every weekday at 23:00 UTC to:
-1.  Fetch the latest market data.
-2.  Run the Monte Carlo simulations.
-3.  Recalculate the Option Greeks.
-4.  **Auto-commit** the fresh visualizations back to this repo.
-
-It is a self-updating journal of financial probability.
-
 ## Tools of the Trade
 - `numpy`: The bedrock of computation.
 - `matplotlib` & `scipy`: For visualizing the unseen.
