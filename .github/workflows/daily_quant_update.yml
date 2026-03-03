@@ -1,0 +1,49 @@
+name: Daily Quant Analysis
+
+on:
+  schedule:
+    # Run at 23:00 UTC (Market Close + buffer) every weekday
+    - cron: '0 23 * * 1-5'
+  workflow_dispatch: # Allow manual trigger
+
+permissions:
+  contents: write
+
+jobs:
+  run-simulations:
+    runs-on: ubuntu-latest
+    env:
+      OPENAI_API_KEY: "dummy_key"
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install pillow
+        pip install -r requirements.txt
+
+    - name: Run Monte Carlo Simulation
+      run: |
+        python3 monte_carlo/main.py
+      
+    - name: Run Black-Scholes Visualization
+      run: |
+        python3 option_pricing/main.py
+      
+    - name: Commit and Push Results
+      run: |
+        git config --global user.name "AutoHedge Bot"
+        git config --global user.email "bot@autohedge.ai"
+        git add monte_carlo/*.png monte_carlo/*.gif
+        git add option_pricing/*.png option_pricing/*.gif
+        git commit -m "📈 Daily Quant Update: $(date +'%Y-%m-%d')" || exit 0
+        git pull --rebase origin main
+        git push
